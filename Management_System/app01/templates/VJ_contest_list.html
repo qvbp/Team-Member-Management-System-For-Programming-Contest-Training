@@ -1,0 +1,294 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+    <title>VJudge比赛列表</title>
+{% endblock %}
+{% block css %}
+    <style>
+        .floating-tag {
+          position: absolute;
+          margin-top: 10px; /* 根据需要调整 */
+          margin-right: 0; /* 这将把标签定位到右侧 */
+          /* 添加标签的其他样式 */
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px">
+            <input id="btnAdd" type="button" value="添加比赛" class="btn btn-success">
+            <div style="float: right; width: 300px">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="请输入名字" value="{{ search_data }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                VJudge比赛列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>选择</th>
+                    <th>比赛编号</th>
+                    <th>比赛名称</th>
+                    <th>开始时间</th>
+                    <th>结束时间</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_set %}
+                    <tr uid="{{ obj.id }}">
+                        <td><input uid="{{ obj.id }}" type="checkbox" class="select-row" data-id="{{ forloop.counter }}" style="width: 18px; height: 18px;"></td>
+                        {#模版语法中后面是不能加括号的，如果需要加括号的话，会自动帮你加#}
+                        <td>{{ obj.num}}</td>
+                        <td><a href="/contest/{{ obj.id }}/VJ_Contest_detail_list/">{{ obj.name }}</a></td>
+                        <td>{{ obj.start_date }}</td>
+                        <td>{{ obj.end_date }}</td>
+                        <td>
+                            <input uid="{{ obj.id }}" class="btn btn-danger btn-xs btn-delete" type="button"
+                                   value="删除">
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <ul class="pagination">
+            {{ page_string }}
+        </ul>
+
+        <div class="floating-tag">
+            <button id="submit-button" type="button" class="btn btn-primary btn-lg active">
+                <span class="glyphicon glyphicon-th" aria-hidden="true"></span>
+                汇总勾选的比赛
+            </button>
+            <a class="btn btn-primary btn-lg active" href="/contest/VJ_Contest_select_detail_list/" target="_blank">
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>
+                展示汇总数据
+            </a>
+        </div>
+    </div>
+
+    <!-- 新建/编辑 公式（对话框） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新建</h4>
+                </div>
+                <div class="modal-body">
+
+                    <form id="formAdd">
+                        <div class="clearfix">
+                            <div class="col-xs-6">
+                                <div class="form-group" style="position: relative;margin-bottom: 20px;">
+                                    <label>比赛编号</label>
+                                    <input type="text" class="form-control" placeholder="请输入比赛编号" name="number">
+                                    <span class="error-msg" style="color: red;position: absolute;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button id="btnSave" type="button" class="btn btn-primary">保 存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除（对话框） -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+
+            <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                <h4>是否确定删除？</h4>
+                <p style="margin: 10px 0;"> 删除后，所有关联的相关数据都会被删除。</p>
+                <p style="text-align: right;">
+                    <button id="btnConfirmDelete" type="button" class="btn btn-danger">确 定</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                </p>
+            </div>
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+    var DELETE_ID;
+
+        $(function () {
+            bindBtnAddEvent();
+            bindBtnSaveEvent();
+            bindBtnDeleteEvent();
+            bindBtnConfirmDeleteEvent();
+        })
+
+        function bindBtnAddEvent() {
+            $("#btnAdd").click(function () {
+                // 将正在编辑的ID设置为空
+                EDIT_ID = undefined;
+
+                // 清空对话框中的数据
+                $("#formAdd")[0].reset();
+
+                // 设置对话框的标题
+                $("#myModalLabel").text("新建");
+
+                // 点击新建按钮，显示对话框。
+                $('#myModal').modal('show');
+            });
+        }
+
+        function bindBtnSaveEvent() {
+            $("#btnSave").click(function () {
+
+                // 清除错误信息
+                $(".error-msg").empty();
+
+                // 添加
+                doAdd();
+
+            });
+        }
+        function doAdd() {
+            // 向后台发送请求（添加的Ajax请求）
+            $.ajax({
+                url: "/contest/VJ_Contest_add/",
+                type: "post",
+                data: $("#formAdd").serialize(),
+                dataType: "JSON",
+                success: function (res) {
+                    if (res.status) {
+
+                        alert("创建成功");
+
+                        // 清空表单  $("#formAdd")是jQuery对象 -> $("#formAdd")[0] DOM对象
+                        $("#formAdd")[0].reset();
+
+                        // 关闭对话框
+                        $('#myModal').modal('hide');
+
+                        // 刷新页面
+                        location.reload();
+
+                    } else {
+                        alert(res.error);
+                        if(res.error === '该比赛已添加，请勿重复添加!'){
+                            // 清空表单  $("#formAdd")是jQuery对象 -> $("#formAdd")[0] DOM对象
+                            $("#formAdd")[0].reset();
+
+                            // 关闭对话框
+                            $('#myModal').modal('hide');
+
+                            // 刷新页面
+                            location.reload();
+                        }
+                        else if(res.error === "输入不能为空!"){
+                            // 清空表单  $("#formAdd")是jQuery对象 -> $("#formAdd")[0] DOM对象
+                            $("#formAdd")[0].reset();
+                        }
+                    }
+                }
+            })
+        }
+
+        function bindBtnDeleteEvent() {
+            $(".btn-delete").click(function () {
+                // alert("点击了删除");
+                // 显示删除对话框
+                $("#deleteModal").modal('show');
+
+                // 获取当前行的ID并赋值给全部变量。
+                DELETE_ID = $(this).attr("uid");
+            });
+        }
+
+        function bindBtnConfirmDeleteEvent() {
+            $("#btnConfirmDelete").click(function () {
+                $.ajax({
+                    url: "/contest/VJ_Contest_delete/",  //    => /order/delete/?uid=123
+                    type: "GET",
+                    data: {
+                        uid: DELETE_ID
+                    },
+                    dataType: "JSON",
+                    success: function (res) {
+                        if (res.status) {
+                            // 隐藏删除框
+                            // $("#deleteModal").modal('hide');
+                            // 在页面上将当前一行数据删除（js）
+                            // $("tr[uid='" + DELETE_ID + "']").remove();
+                            // 要删除的ID制空
+                            // DELETE_ID = 0;
+                            // 简单的思路：
+                            location.reload();
+                        } else {
+                            // 删除失败
+                            alert(res.error);
+                        }
+                    }
+                })
+            });
+        }
+
+      document.addEventListener("DOMContentLoaded", function() {
+        const checkboxes = document.querySelectorAll(".select-row");
+        const submitButton = document.getElementById("submit-button");
+
+        submitButton.addEventListener("click", function() {
+          const selectedRows = [];
+
+          checkboxes.forEach(function(checkbox) {
+            if (checkbox.checked) {
+              const rowId = checkbox.getAttribute("uid");
+              selectedRows.push({ id: rowId });
+            }
+          });
+
+          // 发送选中的数据到后台
+          if (selectedRows.length > 0) {
+            submitDataToBackend(selectedRows);
+          } else {
+            alert("请至少选择一个比赛进行汇总");
+          }
+        });
+
+        function submitDataToBackend(data) {
+          // 使用 AJAX 请求将选中的数据发送到后台
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "/contest/VJ_Contest_select_detail_list/", true);
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.onload = function() {
+            if (xhr.status === 200) {
+              alert("数据提交成功!");
+            } else {
+              alert("数据提交失败，请重新提交!");
+            }
+          };
+          xhr.send(JSON.stringify(data));
+        }
+      });
+
+    </script>
+{% endblock %}

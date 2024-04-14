@@ -1,0 +1,343 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ student.name }}的主页</title>
+{% endblock %}
+{% block css %}
+    <style>
+        /* 默认状态下的样式 */
+        a {
+          color: white;
+          text-decoration: none; /* 链接文本下划线去掉 */
+        }
+
+        /* 鼠标悬停时的样式 */
+        a:hover {
+          color: black;
+          text-decoration: none; /* 链接文本下划线去掉 */
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4">
+                <h1>{{ student.name }}<small>{{ student.get_gender_display }}</small></h1>
+            </div>
+            <div class="col-sm-4">
+                <h1>{{ student.class_name }}</h1>
+            </div>
+            <div class="col-sm-4">
+               <h1>{{ student.student_id }}</h1>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 50px;">
+                <div class="col-sm-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            <a href="https://codeforces.com/profile/{{ cf.CodeForce_id }}"
+                            target="_blank">CodeForce数据（点击查看详细）</a>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ID</th>
+                                        <td>{{ cf.CodeForce_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank分数</th>
+                                        <td>{{ cf.rating }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最高Rank分数</th>
+                                        <td>{{ cf.max_rating }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">总做题数</th>
+                                        <td>{{ cf.solved_all_time }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近一个月做题数</th>
+                                        <td>{{ cf.solved_last_month }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近一年做题数</th>
+                                        <td>{{ cf.solved_last_year }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            <a href='https://atcoder.jp/users/{{ at.AtCoder_id }}'
+                            target="_blank">AtCoder数据（点击查看详细）</a>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ID</th>
+                                        <td>{{ at.AtCoder_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank排名</th>
+                                        <td>{{ at.rank }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank分数</th>
+                                        <td>{{ at.rating }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最高Rank分数</th>
+                                        <td>{{ at.max_rating }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">总比赛场数</th>
+                                        <td>{{ at.Rated_Matches }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近一次比赛时间</th>
+                                        <td>{{ at.Last_Competed }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+        </div>
+
+        <div class="row" style="margin-top: 50px;">
+                <div class="col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            <a href='https://vjudge.net/user/{{ vj.VJudge_id }}'
+                            target="_blank">VJudge数据（点击查看详细）</a>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ID</th>
+                                        <td>{{ vj.VJudge_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">总做题数</th>
+                                        <td>{{ vj.Overall_solved }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近一天做题数</th>
+                                        <td>{{ vj.last_24hours_solved }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近七天做题数</th>
+                                        <td>{{ vj.last_7days_solved }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">最近一个月做题数</th>
+                                        <td>{{ vj.last_30days_solved }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            <a href='https://www.luogu.com.cn/'
+                            target="_blank">洛谷数据（点击后先登录，然后地址栏拼接下面的洛谷账号）</a>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">洛谷账号</th>
+                                        <td>{{ lg.LuoGu_num }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">ID</th>
+                                        <td>{{ lg.LuoGu_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank排名</th>
+                                        <td>{{ lg.rating}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">总做题数</th>
+                                        <td>{{ lg.solved }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                            <a href='https://ac.nowcoder.com/acm/contest/profile/{{ nc.NewCoder_num }}'
+                            target="_blank">牛客OJ数据（点击查看详细）</a>
+                        </div>
+                        <div class="panel-body">
+                            <!-- Table -->
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">ID</th>
+                                        <td>{{ nc.NewCoder_id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank排名</th>
+                                        <td>{{ nc.rank }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">当前Rank分数</th>
+                                        <td>{{ nc.rating }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">总做题数</th>
+                                        <td>{{ nc.solved }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+
+        <div class="panel panel-default" style="margin-top:40px;">
+            <div class="panel-heading"><i class="fa fa-bar-chart" aria-hidden="true"></i> 数据柱状图</div>
+            <div class="panel-body">
+                <div id="m2" style="width: 100%;height: 400px;"></div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" style="margin-top:40px;">
+            <div class="panel-heading"><i class="fa fa-bar-chart" aria-hidden="true"></i> 数据柱状图</div>
+            <div class="panel-body">
+                <div id="m1" style="width: 100%;height: 400px;"></div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/echarts.js' %}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            // 做题数柱状图
+            initBar_Solved();
+            // 近七天做题数柱状图
+            initBar_last_seven_days_Solved();
+
+        })
+
+        /**
+         * 初始化做题数柱状图
+         */
+        function initBar_Solved() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m1'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '{{ student.name }}各个oj做题数/比赛场数',
+                    textAlign: "auto",
+                    left: "center",
+                },
+                tooltip: {},
+                legend: {
+                    data: [],  // 后台获取
+                    bottom: 0
+                },
+                xAxis: {  // x轴
+                    data: []  // 后台获取
+                },
+                yAxis: {},  // y轴
+                series: []  // 后台获取
+            };
+
+            $.ajax({
+                url: "/chart/student_solved_bar/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中。
+                    if (res.status) {
+                        option.legend.data = res.data.legend;
+                        option.xAxis.data = res.data.x_axis;
+                        option.series = res.data.series_list;
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                }
+            })
+        }
+
+        /**
+         * 初始化近七天做题数柱状图
+         */
+        function initBar_last_seven_days_Solved() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m2'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '{{ student.name }}最近七天做题数',
+                    textAlign: "auto",
+                    left: "center",
+                },
+                tooltip: {},
+                legend: {
+                    data: [],  // 后台获取
+                    bottom: 0
+                },
+                xAxis: {  // x轴
+                    data: []  // 后台获取
+                },
+                yAxis: {},  // y轴
+                series: []  // 后台获取
+            };
+
+            $.ajax({
+                url: "/chart/student_solved_last_seven_days_bar/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中。
+                    if (res.status) {
+                        option.legend.data = res.data.legend;
+                        option.xAxis.data = res.data.x_axis;
+                        option.series = res.data.series_list;
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

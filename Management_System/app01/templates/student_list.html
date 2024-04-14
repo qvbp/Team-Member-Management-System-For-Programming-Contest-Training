@@ -1,0 +1,92 @@
+{% extends 'layout.html' %}
+{% block title %}
+    <title>学生列表</title>
+{% endblock %}
+{% block content %}
+    <div class="container-fluid" style="width: 100%; margin: auto;">
+        <div style="margin-bottom: 10px">
+            <a class="btn btn-success" href="/student/add/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                添加学生
+            </a>
+
+            <a class="btn btn-success" href="/student/multi/">
+                <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                批量添加学生
+            </a>
+
+            <div style="float: right; width: 300px">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="请输入名字" value="{{ search_data }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+
+        </div>
+        <div class="panel panel-default">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                学生列表
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>姓名</th>
+                    <th>性别</th>
+                    <th>班级</th>
+                    <th>学号</th>
+                    <th>CF账号</th>
+                    <th>AtCoder账号</th>
+                    <th>VJudge账号</th>
+                    <th>牛客账号</th>
+                    <th>洛谷账号</th>
+                    <th>操作</th>
+                    <th>状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_set %}
+                    <tr>
+                        <td>{{ obj.name }}</td>
+                        {#模版语法中后面是不能加括号的，如果需要加括号的话，会自动帮你加#}
+                        <td>{{ obj.get_gender_display}}</td>
+                        <td>{{ obj.class_name }}</td>
+                        <td>{{ obj.student_id }}</td>
+                        <td>{{ obj.CodeForce_id }}</td>
+                        <td>{{ obj.AtCoder_id }}</td>
+                        <td>{{ obj.VJudge_id }}</td>
+                        <td>{{ obj.NewCoder_id }}</td>
+                        <td>{{ obj.LuoGu_id }}</td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="/student/{{ obj.id }}/edit/">编辑</a>
+                            <a class="btn btn-danger btn-xs" href="/student/{{ obj.id }}/delete/">删除</a>
+                            <a class="btn btn-success btn-xs" href="/student/{{ obj.id }}/enable/">启用</a>
+                            <a class="btn btn-danger btn-xs" href="/student/{{ obj.id }}/disable/">停用</a>
+                        </td>
+                        <td>
+                            {% if obj.is_active %}
+                                已启用
+                            {% else %}
+                                未启用
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <ul class="pagination">
+            {{ page_string }}
+        </ul>
+    </div>
+{% endblock %}

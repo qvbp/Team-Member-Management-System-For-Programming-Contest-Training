@@ -1,0 +1,98 @@
+{% extends 'layout.html' %}
+{% block title %}
+    <title>近期比赛</title>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="margin-top: 50px;">
+            <h1 style="font-family: 'Arial', sans-serif; font-size: 40px; font-weight: bold; color: #333333;
+            text-align: center;"><a href="https://codeforces.com/contests" target="_blank">CodeForce</a></h1>
+            <div class="bs-example" data-example-id="hoverable-table">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>比赛名称</th>
+                        <th>时间</th>
+                        <th>时长</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for obj in query_set_cf %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ obj.name }}</td>
+                            <td>{{ obj.start_time }}</td>
+                            <td>{{ obj.duration }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% if contest_len_cf == 0 %}
+                        <tr><td colspan="5" style="text-align: center;">暂无比赛</td></tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+{#            <div style="margin-bottom: 20px;"></div>#}
+        </div>
+        <div style="margin-top: 50px;">
+        <h1 style="font-family: 'Arial', sans-serif; font-size: 40px; font-weight: bold; color: #333333;
+        text-align: center;"><a href="https://atcoder.jp/contests/" target="_blank">AtCoder</a></h1>
+        <div class="bs-example" data-example-id="hoverable-table">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>比赛名称</th>
+                    <th>时间</th>
+                    <th>时长</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_set_atcoder %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ obj.name }}</td>
+                        <td>{{ obj.start_time }}</td>
+                        <td>{{ obj.duration }}</td>
+                    </tr>
+                {% endfor %}
+                {% if contest_len_atcoder == 0 %}
+                        <tr><td colspan="5" style="text-align: center;">暂无比赛</td></tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div style="margin-top: 50px;">
+            <h1 style="font-family: 'Arial', sans-serif; font-size: 40px; font-weight: bold; color: #333333;
+            text-align: center;"><a href="https://ac.nowcoder.com/acm/contest/vip-index?topCategoryFilter=14" target="_blank">NewCode高校比赛</a></h1>
+            <div class="bs-example" data-example-id="hoverable-table">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>比赛名称</th>
+                        <th>报名时间</th>
+                        <th>比赛时间</th>
+                        <th>时长</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for obj in query_set_NewCode %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ obj.name }}</td>
+                            <td>{{ obj.registration_time }}</td>
+                            <td>{{ obj.start_time }}</td>
+                            <td>{{ obj.duration }}</td>
+                        </tr>
+                    {% endfor %}
+                    {% if contest_lenNewCode == 0 %}
+                        <tr><td colspan="5" style="text-align: center;">暂无比赛</td></tr>
+                    {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

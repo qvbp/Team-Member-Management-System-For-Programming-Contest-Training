@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="panel panel-success">
+            <div class="panel-heading">上传学生信息的Excel文件</div>
+            <div class="panel-body">
+                <form method="post" enctype="multipart/form-data" action="/student/multi/">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <input type="file" name="exc" style="">
+                    </div>
+                    <input type="submit" value="上传" class="btn btn-info btn">
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

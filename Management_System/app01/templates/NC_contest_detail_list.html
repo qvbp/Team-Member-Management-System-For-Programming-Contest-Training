@@ -1,0 +1,135 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block title %}
+    <title>{{ title }}</title>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div style="margin-bottom: 10px" class="clearfix">
+            <div style="float: right; width: 300px">
+                <form method="get">
+                    <div class="input-group">
+                        <input type="text" name="q" class="form-control" placeholder="请输入队伍或学生名字" value="{{ search_data }}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div><!-- /input-group -->
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-primary">
+            <!-- Default panel contents -->
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                {{ title }}
+            </div>
+
+            <!-- Table -->
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>名字</th>
+                    <th>解题数</th>
+                    <th>罚时</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in query_set%}
+                    <tr>
+                        <td>{{ obj.name }}</td>
+                        <td>{{ obj.solved }}</td>
+                        <td>{{ obj.time }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="clearfix">
+            <ul class="pagination">
+                {{ page_string }}
+            </ul>
+        </div>
+
+
+        <div class="panel panel-default" style="margin-top:40px;">
+            <div class="panel-heading"><i class="fa fa-bar-chart" aria-hidden="true"></i> 数据柱状图</div>
+            <div class="panel-body">
+                <div id="m1" style="width: 100%;height: 400px;"></div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/echarts.js' %}"></script>
+    <script type="text/javascript">
+
+        $(function () {
+            // Rating柱状图
+            initBar_Rating();
+
+        })
+
+        /**
+         * 初始化比赛解题数柱状图
+         */
+        function initBar_Rating() {
+            // 基于准备好的dom，初始化echarts实例
+            var myChart = echarts.init(document.getElementById('m1'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '各队员/队伍解题数',
+                    textAlign: "auto",
+                    left: "center",
+                },
+                tooltip: {},
+                legend: {
+                    data: [],  // 后台获取
+                    top: 0,
+                    right: 0
+                },
+                xAxis: {  // x轴
+                    data: [],  // 后台获取
+                    axisLabel: {
+                        interval: 0,  // 设置为 0 表示标签全部显示
+                        rotate: 30,    // 旋转角度，根据需要调整
+                    }
+                },
+                yAxis: {},  // y轴
+                series: [],  // 后台获取
+
+                // 启用滚动条功能
+                dataZoom: [
+                    {
+                        type: 'slider', // 滑动条型滚动条
+                        start: 0, // 滚动条起始位置
+                        end: 10, // 滚动条结束位置
+                        showDetail: false, // 是否显示详细信息
+                    }
+                ],
+            };
+
+            $.ajax({
+                url: "/chart/nc/contest_detail_bar/",
+                type: "get",
+                dataType: "JSON",
+                success: function (res) {
+                    // 将后台返回的数据，更新到option中。
+                    if (res.status) {
+                        option.legend.data = res.data.legend;
+                        option.xAxis.data = res.data.x_axis;
+                        option.series = res.data.series_list;
+
+                        // 使用刚指定的配置项和数据显示图表。
+                        myChart.setOption(option);
+                    }
+                }
+            })
+        }
+    </script>
+{% endblock %}

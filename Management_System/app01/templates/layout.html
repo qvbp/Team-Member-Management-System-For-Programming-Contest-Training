@@ -1,0 +1,103 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+    <title>用户列表</title>
+    {% endblock %}
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+    <style>
+        .navbar{
+            border-radius: 0;
+            {#background-color: #4c4c4c;#}
+            font-size: 20px;
+        }
+        body{
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        /* 悬停状态的样式 */
+        .dropdown:hover .dropdown-menu {
+          background-color: white;
+          color: blue;
+        }
+    </style>
+    {% block css %}{% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-inverse" >
+  <div class="container">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header" >
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/index/list/"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 集训队管理系统</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">账户管理<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/admin/list/">管理员账户</a></li>
+            <li><a href="/student/list/">队员账户</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">比赛管理<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/contest/contest_list/">近期比赛</a></li>
+            <li><a href="/contest/NC_Contest_list/">牛客排位赛</a></li>
+            <li><a href="/contest/VJ_Contest_list/">VJudge排位赛</a></li>
+            <li><a href="/contest/NC_VJ_Contest_list/">排位赛</a></li>
+          </ul>
+        </li>
+        <li><a href="/strength/list/">实力排行榜</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">oj分数及做题管理<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/oj/cf_list/">CodeForce</a></li>
+            <li><a href="/oj/atcoder_list/">AtCoder</a></li>
+            <li><a href="/oj/vjudge_list/">VJudge</a></li>
+            <li><a href="/oj/newcode_list/">牛客oj</a></li>
+            <li><a href="/oj/luogu_list/">洛谷oj</a></li>
+{#            <li role="separator" class="divider"></li>#}
+{#            <li><a href="/logout/">退出登录</a></li>#}
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+{#        <li><a href="#">登录</a></li>#}
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>  {{ request.session.info.name }}<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+{#            <li><a href="#">个人资料</a></li>#}
+{#            <li><a href="#">我的信息</a></li>#}
+{#            <li role="separator" class="divider"></li>#}
+            <li><a href="/logout/">退出登录</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div>
+    <div class="container-fluid ">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+{% block js %}{% endblock %}
+</body>
+</html>
